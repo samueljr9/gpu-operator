@@ -1,0 +1,108 @@
+# Enable the GPU operator
+operator:
+  create: true
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: gpu
+                operator: In
+                values:
+                  - "true" # Ensure only GPU nodes are selected
+
+  # Custom tolerations for GPU nodes
+  tolerations:
+    - key: "gpu"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+node-feature-discovery:
+  worker:
+    tolerations:
+      - key: "gpu"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: gpu
+                  operator: In
+                  values:
+                    - "true" # Ensure only GPU nodes are selected
+  master:
+    tolerations:
+      - key: "gpu"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: gpu
+                  operator: In
+                  values:
+                    - "true" # Ensure only GPU nodes are selected
+  gc:
+    tolerations:
+      - key: "gpu"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: gpu
+                  operator: In
+                  values:
+                    - "true" # Ensure only GPU nodes are selected
+
+# Enable the NVIDIA driver installation
+gpu:
+  nvidiaDriver:
+    enabled: true
+    version: "460.32.03" # Replace with the desired version
+
+# Enable the NVIDIA device plugin
+devicePlugin:
+  enabled: true
+  version: "0.8.0" # Replace with the desired version
+
+# Enable the NVIDIA Container Toolkit
+containerToolkit:
+  enabled: true
+  version: "1.6.0" # Replace with the desired version
+
+# Configure the feature gates for the GPU operator
+featureGates:
+  # Enable experimental GPU operators (if needed)
+  experimentalGPU: false
+
+# Disable the DaemonSet for the device plugin as you don't want it
+daemonSet:
+  enabled: false
+
+# Custom labels for the GPU Operator deployment
+labels:
+  app: "nvidia-gpu-operator"
+
+# Node selector and affinity to ensure the GPU operator runs only on GPU nodes
+nodeSelector:
+  gpu: "true" # Ensure the GPU nodes are labeled with 'gpu=true'
+
+# Optional resource requests and limits
+resources:
+  requests:
+    memory: "1Gi"
+    cpu: "500m"
+  limits:
+    memory: "2Gi"
+    cpu: "1000m"
+
